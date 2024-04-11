@@ -1,0 +1,83 @@
+﻿<adonisControls:AdonisWindow x:Class="Folsense.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
+        xmlns:adonisControls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
+        xmlns:adonisExtensions="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
+        xmlns:local="clr-namespace:Folsense"
+        xmlns:viewmodels="clr-namespace:Folsense.ViewModels"
+        xmlns:views="clr-namespace:Folsense.Views"
+        xmlns:base="clr-namespace:Folsense.Bases"
+        mc:Ignorable="d"
+        Background="Black"
+        Height="450"
+        Width="800"
+        MinHeight="450"
+        MinWidth="800"
+        IconVisibility="Hidden"
+        PlaceTitleBarOverContent="True">
+
+    <Window.DataContext>
+        <viewmodels:MainViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <!-- Define DataTemplates for each view -->
+        <DataTemplate DataType="{x:Type views:DashboardView}">
+            <views:DashboardView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type views:AccountView}">
+            <views:AccountView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type views:SettingsView}">
+            <views:SettingsView/>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding SomeCommand}" Key="Insert"/>
+    </Window.InputBindings>
+
+    <Grid Margin="0,25,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="70"/>
+            </Grid.RowDefinitions>
+
+            <!-- Bind Button Command to change the view -->
+            <Button Grid.Row="0" Style="{StaticResource IconButton}" Margin="10" adonisExtensions:CornerRadiusExtension.CornerRadius="10"
+                    Command="{Binding NavigateCommand}"
+                    CommandParameter="{x:Type views:DashboardView}">
+                <Path Margin="15" Data="{StaticResource Home}" Fill="White" Stretch="Uniform"/>
+            </Button>
+
+            <Button Grid.Row="1" Style="{StaticResource IconButton}" Margin="10" adonisExtensions:CornerRadiusExtension.CornerRadius="10"
+                    Command="{Binding NavigateCommand}"
+                    CommandParameter="{x:Type views:AccountView}">
+                <Path Margin="15" Data="{StaticResource Account}" Fill="White" Stretch="Uniform"/>
+            </Button>
+
+            <Button Grid.Row="5" Style="{StaticResource IconButton}" Margin="10" adonisExtensions:CornerRadiusExtension.CornerRadius="10"
+                    Command="{Binding NavigateCommand}"
+                    CommandParameter="{x:Type views:SettingsView}">
+                <Path Margin="15" Data="{StaticResource Settings}" Fill="White" Stretch="Uniform"/>
+            </Button>
+        </Grid>
+
+        <Border Grid.Column="1" Background="White" Margin="5" CornerRadius="10">
+            <ContentControl Content="{Binding CurrentView}"/>
+        </Border>
+    </Grid>
+</adonisControls:AdonisWindow>
