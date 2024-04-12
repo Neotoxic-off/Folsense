@@ -13,6 +13,24 @@
         <viewmodels:DashboardViewModel/>
     </UserControl.DataContext>
 
-    <Grid AllowDrop="True" services:FileDropBehavior.DropCommand="{Binding DropCommand}">
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Hidden">
+            <StackPanel>
+                <ItemsControl x:Name="Series" ItemsSource="{Binding databaseModel.Content}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="4"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button>
+                                <Image Source="{Binding Thumbnail}"/>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

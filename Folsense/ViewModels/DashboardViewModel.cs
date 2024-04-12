@@ -1,5 +1,7 @@
 ﻿using Folsense.Bases;
 using Folsense.Models;
+using Folsense.Models.Database;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +12,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-using Newtonsoft;
+using Newtonsoft.Json;
+using Folsense.Models.IO;
+using System.IO;
+using Folsense.Tools;
 
 namespace Folsense.ViewModels
 {
@@ -30,22 +35,25 @@ namespace Folsense.ViewModels
             set { SetProperty(ref _databaseModel, value); }
         }
 
+        private DatabaseManager? _databaseManager;
+        public DatabaseManager? databaseManager
+        {
+            get { return _databaseManager; }
+            set { SetProperty(ref _databaseManager, value); }
+        }
+
         public DashboardViewModel()
         {
             dashboardModel = new DashboardModel();
             databaseModel = new DatabaseModel();
+            databaseManager = new DatabaseManager();
 
             LoadDatabase();
         }
 
-        private DatabaseModel? LoadDatabase()
+        private void LoadDatabase()
         {
-            FileModel? file = new FileModel(ISettings.Database, false);
-
-            if (file.Exists == true)
-            {
-                databaseModel = null;
-            }
+            databaseModel.Content = databaseManager.Get();
         }
     }
 }

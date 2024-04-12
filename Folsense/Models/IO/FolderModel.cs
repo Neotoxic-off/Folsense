@@ -1,6 +1,7 @@
 using Folsense.Bases;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace Folsense.Models.IO
         public FolderModel(string path, bool force)
         {
             this.Path = path;
-            this.Exists = Directory.CreateDirectory(path);
+            this.Exists = Directory.Exists(path);
             this.Force = force;
 
             Create();

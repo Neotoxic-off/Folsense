@@ -98,7 +98,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border Background="{DynamicResource PurpleHover}"
+                            <Border Background="Gray"
                                     CornerRadius="5"
                                     BorderThickness="0">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
