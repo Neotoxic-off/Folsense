@@ -10,6 +10,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
+using Newtonsoft;
+
 namespace Folsense.ViewModels
 {
     public class DashboardViewModel : BaseClass
@@ -38,11 +40,11 @@ namespace Folsense.ViewModels
 
         private DatabaseModel? LoadDatabase()
         {
-            FileModel? file = new FileModel();
+            FileModel? file = new FileModel(ISettings.Database, false);
 
-            if (File.Exists(ISettings.Database) == true)
+            if (file.Exists == true)
             {
-                
+                databaseModel = null;
             }
         }
     }
