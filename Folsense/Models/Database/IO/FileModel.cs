@@ -9,8 +9,8 @@ namespace Folsense.Models.Database.IO
 {
     public class FileModel : BaseIOClass
     {
-        private string? _id;
-        public string? Id
+        private Guid? _id;
+        public Guid? Id
         {
             get { return _id; }
             set { SetProperty(ref _id, value); }
@@ -21,6 +21,11 @@ namespace Folsense.Models.Database.IO
         {
             get { return _data; }
             set { SetProperty(ref _data, value); }
+        }
+
+        public FileModel()
+        {
+            Id = Guid.NewGuid();
         }
     }
 }

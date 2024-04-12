@@ -38,9 +38,12 @@ namespace Folsense.ViewModels
 
         private DatabaseModel? LoadDatabase()
         {
-            if (File.Exists())
-            databaseModel.Id = null;
-            databaseModel.Content = new ObservableCollection<BaseIOClass>();
+            FileModel? file = new FileModel();
+
+            if (File.Exists(ISettings.Database) == true)
+            {
+                
+            }
         }
     }
 }

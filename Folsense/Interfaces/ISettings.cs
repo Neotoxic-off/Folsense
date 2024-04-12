@@ -11,7 +11,11 @@ namespace Folsense.Models
     {
         public static string Extension = "fd";
         public static string Root = new FolderModel(
-            $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\Makima",
+            $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\Folsense",
+            true
+        );
+        public static string Database = new FolderModel(
+            $"{ISettings.Root}\\Database.{ISettings.Extension}",
             true
         );
     }

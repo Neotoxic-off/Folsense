@@ -9,15 +9,8 @@ namespace Folsense.Models.Database
 {
     public class DatabaseModel : BaseClass
     {
-        private FileModel? _file;
-        public FileModel? File
-        {
-            get { return _file; }
-            set { SetProperty(ref _file, value); }
-        }
-
-        private string? _id;
-        public string? Id
+        private Guid? _id;
+        public Guid? Id
         {
             get { return _id; }
             set { SetProperty(ref _id, value); }
@@ -32,7 +25,8 @@ namespace Folsense.Models.Database
 
         public DatabaseModel()
         {
-            
+            Id = Guid.NewGuid();
+            Content = new ObservableCollection<BaseIOClass>();
         }
     }
 }
