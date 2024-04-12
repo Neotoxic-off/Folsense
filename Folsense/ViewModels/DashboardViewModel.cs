@@ -21,9 +21,26 @@ namespace Folsense.ViewModels
             set { SetProperty(ref _dashboardModel, value); }
         }
 
+        private DatabaseModel? _databaseModel;
+        public DatabaseModel? databaseModel
+        {
+            get { return _databaseModel; }
+            set { SetProperty(ref _databaseModel, value); }
+        }
+
         public DashboardViewModel()
         {
             dashboardModel = new DashboardModel();
+            databaseModel = new DatabaseModel();
+
+            LoadDatabase();
+        }
+
+        private DatabaseModel? LoadDatabase()
+        {
+            if (File.Exists())
+            databaseModel.Id = null;
+            databaseModel.Content = new ObservableCollection<BaseIOClass>();
         }
     }
 }

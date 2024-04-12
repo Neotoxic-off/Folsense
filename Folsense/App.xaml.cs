@@ -10,5 +10,4 @@ namespace Folsense
     public partial class App : Application
     {
     }
-
 }
