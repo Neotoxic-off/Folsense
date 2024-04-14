@@ -12,14 +12,13 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Drawing;
-using NReco.VideoConverter;
 
 namespace Folsense.Models.Database.IO
 {
     public class FileModel : BaseIOClass
     {
         private Guid? _id;
-        public Guid? Id
+        override public Guid? Id
         {
             get { return _id; }
             set { SetProperty(ref _id, value); }
@@ -46,15 +45,10 @@ namespace Folsense.Models.Database.IO
             set { SetProperty(ref _data, value); }
         }
 
-        private BitmapSource? _thumbnail;
-        public BitmapSource? Thumbnail
-        {
-            get { return _thumbnail; }
-            set { SetProperty(ref _thumbnail, value); }
-        }
-
         public FileModel()
         {
+            Id = Guid.NewGuid();
+            Date = DateTime.Now;
         }
 
         public FileModel(string path)
@@ -62,49 +56,8 @@ namespace Folsense.Models.Database.IO
             Id = Guid.NewGuid();
             Extension = Path.GetExtension(path);
             Name = Path.GetFileName(path);
-            Data = File.ReadAllBytes(path);
-
-            LoadThumbnail(path);
-        }
-
-        private void LoadThumbnail(string path)
-        {
-            FFMpegConverter ffMpeg = new FFMpegConverter();
-            string cache = $"{ISettings.Root.Path}\\cache.tmp";
-            string cache_thumbnail = $"{ISettings.Root.Path}\\cache.jpg";
-
-            if (ISettings.Videos.Contains(Extension) == true)
-            {
-                if (Extension != "mp4")
-                {
-                    ffMpeg.ConvertMedia(path, cache, Format.mp4);
-                    ffMpeg.GetVideoThumbnail(cache, cache_thumbnail);
-                } else
-                {
-                    ffMpeg.GetVideoThumbnail(path, cache_thumbnail);
-                }
-
-                if (File.Exists(cache) == true)
-                    File.Delete(cache);
-
-                Thumbnail = ConvertByteArrayToBitmapSource(File.ReadAllBytes(cache_thumbnail));
-            } else
-            {
-                Thumbnail = ConvertByteArrayToBitmapSource(Data);
-            }
-        }
-
-        private BitmapSource ConvertByteArrayToBitmapSource(byte[] imageData)
-        {
-            using (MemoryStream stream = new MemoryStream(imageData))
-            {
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.StreamSource = stream;
-                bitmapImage.EndInit();
-                return bitmapImage;
-            }
+            Data = Tools.Security.Encrypt(File.ReadAllBytes(path));
+            Date = DateTime.Now;
         }
     }
 }

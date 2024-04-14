@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Folsense.Tools
 {
@@ -21,7 +22,21 @@ namespace Folsense.Tools
             {
                 collection = db.GetCollection<BaseIOClass>("vault");
                 collection.Insert(content);
+                collection.EnsureIndex(x => x.Id);
                 collection.Update(content);
+            }
+        }
+
+        public void Delete(Guid id)
+        {
+            BaseIOClass item = null;
+            ILiteCollection<BaseIOClass>? collection = null;
+
+            using (var db = new LiteDatabase(ISettings.Database.Path))
+            {
+                collection = db.GetCollection<BaseIOClass>("vault");
+                item = collection.FindOne(x => x.Id == id);
+                collection.Delete(item.Id);
             }
         }
 
@@ -37,6 +52,20 @@ namespace Folsense.Tools
             }
             
             return (converted);
+        }
+
+        public BaseIOClass Retrieve(Guid id)
+        {
+            BaseIOClass result = new BaseIOClass();
+            ILiteCollection<BaseIOClass>? collection = null;
+
+            using (var db = new LiteDatabase(ISettings.Database.Path))
+            {
+                collection = db.GetCollection<BaseIOClass>("vault");
+                result = collection.FindOne(x => x.Id == id);
+            }
+
+            return (result);
         }
 
         public ObservableCollection<BaseIOClass> Convert(ILiteCollection<BaseIOClass> collection)

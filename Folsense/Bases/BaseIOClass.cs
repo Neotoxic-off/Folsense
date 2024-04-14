@@ -11,6 +11,15 @@ namespace Folsense.Bases
 {
     public class BaseIOClass : INotifyPropertyChanged
     {
+        virtual public Guid? Id { get; set; }
+
+        private DateTime? _date;
+        public DateTime? Date
+        {
+            get { return _date; }
+            set { SetProperty(ref _date, value); }
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string? propertyName = null)

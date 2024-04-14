@@ -1,6 +1,5 @@
 ﻿using Folsense.Bases;
 using Folsense.Models;
-using Folsense.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,14 +23,6 @@ namespace Folsense.ViewModels
         public AccountViewModel()
         {
             accountModel = new AccountModel();
-            accountModel.Id = GetHWID();
-        }
-
-        private string GetHWID()
-        {
-            HWID hwid = new HWID();
-
-            return (hwid.Id);
         }
     }
 }

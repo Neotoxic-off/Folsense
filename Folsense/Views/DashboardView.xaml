@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Folsense.Views"
-             xmlns:services="clr-namespace:Folsense.Services"
              xmlns:viewmodels="clr-namespace:Folsense.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -14,23 +13,72 @@
     </UserControl.DataContext>
 
     <Grid>
-        <ScrollViewer VerticalScrollBarVisibility="Hidden">
-            <StackPanel>
-                <ItemsControl x:Name="Series" ItemsSource="{Binding databaseModel.Content}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="4"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Hidden">
+            <StackPanel Orientation="Vertical">
+                <ItemsControl x:Name="Database" ItemsSource="{Binding databaseModel.Content}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button>
-                                <Image Source="{Binding Thumbnail}"/>
-                            </Button>
+                            <Border Margin="2" Padding="5" CornerRadius="5" Background="Black" BorderThickness="2" BorderBrush="Black">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="40"/>
+                                        <ColumnDefinition Width="40"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="ID: "/>
+                                            <Label Content="{Binding Id}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="Name: "/>
+                                            <Label Content="{Binding Name}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="Date: "/>
+                                            <Label Content="{Binding Date}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="Files: "/>
+                                            <Label Content="{Binding Files.Count}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    
+                                    <Button Grid.Column="1" Style="{StaticResource RoundButton}" Command="{Binding ElementName=Database, Path=DataContext.DeleteContentCommand}" CommandParameter="{Binding Id}" Background="#FF5050" Width="30" Height="30">
+                                        <Path Data="{StaticResource Trash}" Fill="White" Stretch="Uniform" Margin="5"/>
+                                    </Button>
+
+                                    <Button Grid.Column="2" Style="{StaticResource RoundButton}" Command="{Binding ElementName=Database, Path=DataContext.DownloadContentCommand}" CommandParameter="{Binding Id}" Background="#3399FF" Width="30" Height="30">
+                                        <Path Data="{StaticResource Download}" Fill="White" Stretch="Uniform" Margin="5"/>
+                                    </Button>
+                                </Grid>
+                            </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </StackPanel>
         </ScrollViewer>
+        
+        <Border Grid.Row="1" Background="Black" CornerRadius="10" Margin="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="150"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="3" Content="Add" Style="{StaticResource DownloadButton}" Command="{Binding AddContentCommand}" Width="100" Height="30"/>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>
