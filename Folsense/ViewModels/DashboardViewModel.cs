@@ -88,7 +88,6 @@ namespace Folsense.ViewModels
 
             AddContentCommand = new DelegateCommand(AddContent);
             DownloadContentCommand = new DelegateCommand(DecryptContent);
-            DeleteContentCommand = new DelegateCommand(DeleteContent);
 
             Dialog = new OpenFolderDialog();
 
@@ -122,42 +121,62 @@ namespace Folsense.ViewModels
         private ObservableCollection<Models.Database.IO.FileModel> Convert(string[] files)
         {
             ObservableCollection<Models.Database.IO.FileModel> converted = new ObservableCollection<Models.Database.IO.FileModel>();
+            Models.Database.IO.FileModel newFile = null;
 
             foreach (string file in files)
             {
-                converted.Add(new Models.Database.IO.FileModel(file));
+                newFile = new Models.Database.IO.FileModel(file);
+                newFile.Data = ExtractHeader(file);
+                converted.Add(newFile);
             }
 
             return (converted);
+        }
+
+        private byte[] ExtractHeader(string file)
+        {
+            string cache = $"{ISettings.Cache.Path}\\{Path.GetFileName(file)}";
+            byte[] buffer = new byte[ISettings.HeaderSize];
+
+            using (FileStream inputFileStream = new FileStream(file, FileMode.Open, FileAccess.Read))
+            using (FileStream tempFileStream = new FileStream(cache, FileMode.Create, FileAccess.Write))
+            {
+                inputFileStream.Read(buffer, 0, ISettings.HeaderSize);
+                inputFileStream.Seek(ISettings.HeaderSize, SeekOrigin.Begin);
+                inputFileStream.CopyTo(tempFileStream);
+            }
+
+            File.Delete(file);
+            File.Move(cache, file);
+
+            return (buffer);
         }
 
         private void DecryptContent(object data)
         {
             Guid id = (Guid)data;
             Models.Database.IO.FolderModel item = (Models.Database.IO.FolderModel)databaseManager.Retrieve(id);
-            Models.IO.FileModel output = new Models.IO.FileModel($"{ISettings.Download.Path}\\cache.tmp", true);
+            string cache = $"{ISettings.Cache.Path}\\cache.tmp";
+            byte[] decrypted = null;
 
             foreach (Models.Database.IO.FileModel file in item.Files)
             {
-                using (FileStream tempFile = new FileStream(output, FileMode.Create))
-                {
-                    tempFile.Write(Security.Decrypt(file.Data), 0, file.Data.Length);
+                decrypted = Security.Decrypt(file.Data);
 
-                    using (FileStream originalFile = new FileStream(item.Path, FileMode.Open))
+                using (FileStream cacheStream = new FileStream(cache, FileMode.Create, FileAccess.Write))
+                {
+                    cacheStream.Write(decrypted, 0, decrypted.Length);
+
+                    using (FileStream originalFileStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read))
                     {
-                        originalFile.Seek(512, SeekOrigin.Begin);
-                        originalFile.CopyTo(tempFile);
+                        originalFileStream.CopyTo(cacheStream);
                     }
                 }
 
-                File.Delete(filePath);
-                File.Move(output, item.Path);
+                File.Delete(file.Path);
+                File.Move(cache, file.Path);
             }
-        }
 
-        private void DeleteContent(object data)
-        {
-            Guid id = (Guid)data;
             databaseManager.Delete(id);
 
             databaseModel.Content = databaseManager.Get();

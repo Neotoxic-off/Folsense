@@ -31,6 +31,13 @@ namespace Folsense.Models.Database.IO
             set { SetProperty(ref _name, value); }
         }
 
+        private string? _path;
+        public string? Path
+        {
+            get { return _path; }
+            set { SetProperty(ref _path, value); }
+        }
+
         private string? _extension;
         public string? Extension
         {
@@ -54,15 +61,16 @@ namespace Folsense.Models.Database.IO
         public FileModel(string path)
         {
             Id = Guid.NewGuid();
-            Extension = Path.GetExtension(path);
-            Name = Path.GetFileName(path);
-            Data = Tools.Security.Encrypt(File.LoadData(path));
-            Date = DateTime.Now;
+            Path = path;
+            Extension = System.IO.Path.GetExtension(path);
+            Name = System.IO.Path.GetFileName(path);
+            Data = Tools.Security.Encrypt(LoadData(path));
+            Date = DateTime.Today;
         }
 
         private byte[] LoadData(string path)
         {
-            byte[] buffer = new byte[512];
+            byte[] buffer = new byte[ISettings.HeaderSize];
 
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
