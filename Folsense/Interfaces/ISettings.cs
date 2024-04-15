@@ -15,9 +15,9 @@ namespace Folsense.Models
             $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\Folsense",
             true
         );
-        public static FileModel Database = new FileModel(
-            $"{Root.Path}\\Database.{Extension}",
-            false
+        public static FolderModel Database = new FolderModel(
+            $"{Root.Path}\\Database",
+            true
         );
         public static string[] Videos = new string[]
         {

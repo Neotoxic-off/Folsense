@@ -13,7 +13,7 @@ namespace Folsense.Tools
         {
             int key_size = 32;
             byte[] key = new byte[key_size];
-            string hwid = $"+{Environment.UserName}{Environment.MachineName}+";
+            string hwid = sha256($"{Environment.UserName}{Environment.MachineName}");
 
             for (int i = 0; i < key_size; i++)
             {
@@ -30,18 +30,33 @@ namespace Folsense.Tools
         {
             int padding_size = 16;
             byte[] padding = new byte[padding_size];
-            string hwid = $"^{Environment.MachineName}{Environment.UserName}^";
+            string hwid = sha256($"{Environment.MachineName}{Environment.UserName}");
 
             for (int i = 0; i < padding_size; i++)
             {
                 if (hwid.Length > i + 1)
                 {
-                    padding[i] = (byte)hwid[i];
+                    padding[i] = (byte)hwid[i] ^ i;
                 }
             }
 
             return (padding);
         }
+
+        static string sha256(string data)
+        {
+            var crypt = new System.Security.Cryptography.SHA256Managed();
+            var hash = new System.Text.StringBuilder();
+            byte[] crypto = crypt.ComputeHash(Encoding.UTF8.GetBytes(data));
+
+            foreach (byte theByte in crypto)
+            {
+                hash.Append(theByte);
+            }
+
+            return hash;
+        }
+
 
         public static byte[] Encrypt(byte[] plainBytes)
         {
