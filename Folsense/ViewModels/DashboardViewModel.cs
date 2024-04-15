@@ -143,7 +143,7 @@ namespace Folsense.ViewModels
                 {
                     tempFile.Write(Security.Decrypt(file.Data), 0, file.Data.Length);
 
-                    using (FileStream originalFile = new FileStream(filePath, FileMode.Open))
+                    using (FileStream originalFile = new FileStream(item.Path, FileMode.Open))
                     {
                         originalFile.Seek(512, SeekOrigin.Begin);
                         originalFile.CopyTo(tempFile);
@@ -151,7 +151,7 @@ namespace Folsense.ViewModels
                 }
 
                 File.Delete(filePath);
-                File.Move(output, filePath);
+                File.Move(output, item.Path);
             }
         }
 
