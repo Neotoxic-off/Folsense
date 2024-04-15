@@ -87,7 +87,7 @@ namespace Folsense.ViewModels
             databaseManager = new DatabaseManager();
 
             AddContentCommand = new DelegateCommand(AddContent);
-            DownloadContentCommand = new DelegateCommand(DownloadContent);
+            DownloadContentCommand = new DelegateCommand(DecryptContent);
             DeleteContentCommand = new DelegateCommand(DeleteContent);
 
             Dialog = new OpenFolderDialog();
@@ -131,15 +131,27 @@ namespace Folsense.ViewModels
             return (converted);
         }
 
-        private void DownloadContent(object data)
+        private void DecryptContent(object data)
         {
             Guid id = (Guid)data;
             Models.Database.IO.FolderModel item = (Models.Database.IO.FolderModel)databaseManager.Retrieve(id);
-            Models.IO.FolderModel output = new Models.IO.FolderModel($"{ISettings.Download.Path}\\{item.Name}", true);
+            Models.IO.FileModel output = new Models.IO.FileModel($"{ISettings.Download.Path}\\cache.tmp", true);
 
             foreach (Models.Database.IO.FileModel file in item.Files)
             {
-                File.WriteAllBytes($"{output.Path}\\{file.Name}", Security.Decrypt(file.Data));
+                using (FileStream tempFile = new FileStream(output, FileMode.Create))
+                {
+                    tempFile.Write(Security.Decrypt(file.Data), 0, file.Data.Length);
+
+                    using (FileStream originalFile = new FileStream(filePath, FileMode.Open))
+                    {
+                        originalFile.Seek(512, SeekOrigin.Begin);
+                        originalFile.CopyTo(tempFile);
+                    }
+                }
+
+                File.Delete(filePath);
+                File.Move(output, filePath);
             }
         }
 

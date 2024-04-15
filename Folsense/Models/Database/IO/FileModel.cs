@@ -56,8 +56,21 @@ namespace Folsense.Models.Database.IO
             Id = Guid.NewGuid();
             Extension = Path.GetExtension(path);
             Name = Path.GetFileName(path);
-            Data = Tools.Security.Encrypt(File.ReadAllBytes(path));
+            Data = Tools.Security.Encrypt(File.LoadData(path));
             Date = DateTime.Now;
+        }
+
+        private byte[] LoadData(string path)
+        {
+            byte[] buffer = new byte[512];
+
+            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                var bytes_read = fs.Read(buffer, 0, buffer.Length);
+                fs.Close();
+            }
+
+            return (buffer);
         }
     }
 }
