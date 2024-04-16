@@ -27,7 +27,7 @@ namespace Folsense.Tools
         {
             ILiteCollection<BaseIOClass>? collection = null;
 
-            using (var db = new LiteDatabase(PathBuilder(content.Id)))
+            using (LiteDatabase db = new LiteDatabase(PathBuilder(content.Id)))
             {
                 collection = db.GetCollection<BaseIOClass>("vault");
                 collection.Insert(content);

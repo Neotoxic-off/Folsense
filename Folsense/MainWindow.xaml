@@ -12,8 +12,8 @@
         xmlns:base="clr-namespace:Folsense.Bases"
         mc:Ignorable="d"
         Background="Black"
-        Height="450"
-        Width="800"
+        Height="720"
+        Width="1080"
         MinHeight="450"
         MinWidth="800"
         IconVisibility="Hidden"
@@ -47,6 +47,12 @@
             </Button>
 
             <Button Grid.Row="1" Style="{StaticResource IconButton}" Margin="10" adonisExtensions:CornerRadiusExtension.CornerRadius="10"
+                    Command="{Binding NavigateCommand}"
+                    CommandParameter="{x:Type views:VaultView}">
+                <Path Margin="15" Data="{StaticResource Vault}" Fill="White" Stretch="Uniform"/>
+            </Button>
+
+            <Button Grid.Row="2" Style="{StaticResource IconButton}" Margin="10" adonisExtensions:CornerRadiusExtension.CornerRadius="10"
                     Command="{Binding NavigateCommand}"
                     CommandParameter="{x:Type views:AccountView}">
                 <Path Margin="15" Data="{StaticResource Account}" Fill="White" Stretch="Uniform"/>

@@ -19,11 +19,11 @@ using System.Windows.Shapes;
 namespace Folsense.Views
 {
     /// <summary>
-    /// Interaction logic for DashboardView.xaml
+    /// Interaction logic for VaultView.xaml
     /// </summary>
-    public partial class DashboardView : UserControl
+    public partial class VaultView : UserControl
     {
-        public DashboardView()
+        public VaultView()
         {
             InitializeComponent();
         }

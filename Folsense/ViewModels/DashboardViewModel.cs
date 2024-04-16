@@ -19,22 +19,29 @@ using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using Folsense.Models.Database.IO;
 
+using LiveCharts;
+using LiveCharts.Configurations;
+using LiveCharts.Defaults;
+using LiveCharts.Wpf;
+using System.Runtime.Serialization;
+
+
 namespace Folsense.ViewModels
 {
     public class DashboardViewModel : BaseClass
     {
-        private DashboardModel? _dashboardModel;
-        public DashboardModel? dashboardModel
+        private string? _changelogContent;
+        public string? ChangelogContent
         {
-            get { return _dashboardModel; }
-            set { SetProperty(ref _dashboardModel, value); }
+            get { return _changelogContent; }
+            set { SetProperty(ref _changelogContent, value); }
         }
 
-        private DatabaseModel? _databaseModel;
-        public DatabaseModel? databaseModel
+        private object? _changelogContentMarkdown;
+        public object? ChangelogContentMarkdown
         {
-            get { return _databaseModel; }
-            set { SetProperty(ref _databaseModel, value); }
+            get { return _changelogContentMarkdown; }
+            set { SetProperty(ref _changelogContentMarkdown, value); }
         }
 
         private DatabaseManager? _databaseManager;
@@ -44,54 +51,53 @@ namespace Folsense.ViewModels
             set { SetProperty(ref _databaseManager, value); }
         }
 
-        private OpenFolderDialog _dialog;
-        public OpenFolderDialog Dialog
+        private DatabaseModel? _databaseModel;
+        public DatabaseModel? databaseModel
         {
-            get { return _dialog; }
-            set { SetProperty(ref _dialog, value); }
+            get { return _databaseModel; }
+            set { SetProperty(ref _databaseModel, value); }
         }
 
-        private DelegateCommand _addContentCommand;
-        public DelegateCommand AddContentCommand
+        private SeriesCollection? _chartSeries;
+        public SeriesCollection? ChartSeries
         {
-            get { return _addContentCommand; }
-            set { SetProperty(ref _addContentCommand, value); }
+            get { return _chartSeries; }
+            set { SetProperty(ref _chartSeries, value); }
         }
 
-        private DelegateCommand _downloadContentCommand;
-        public DelegateCommand DownloadContentCommand
+        private ObservableCollection<string>? _dates;
+        public ObservableCollection<string>? Dates
         {
-            get { return _downloadContentCommand; }
-            set { SetProperty(ref _downloadContentCommand, value); }
+            get { return _dates; }
+            set { SetProperty(ref _dates, value); }
         }
 
-        private DelegateCommand _deleteContentCommand;
-        public DelegateCommand DeleteContentCommand
+        private MarkdownConverter _markdownConverter;
+        public MarkdownConverter markdownConverter
         {
-            get { return _deleteContentCommand; }
-            set { SetProperty(ref _deleteContentCommand, value); }
+            get { return _markdownConverter; }
+            set { SetProperty(ref _markdownConverter, value); }
         }
-
-        private string _encryptionKey;
-        public string EncryptionKey
-        {
-            get { return _encryptionKey; }
-            set { SetProperty(ref _encryptionKey, value); }
-        }
-
 
         public DashboardViewModel()
         {
-            dashboardModel = new DashboardModel();
-            databaseModel = new DatabaseModel();
             databaseManager = new DatabaseManager();
+            databaseModel = new DatabaseModel();
+            Dates = new ObservableCollection<string>();
+            markdownConverter = new MarkdownConverter();
 
-            AddContentCommand = new DelegateCommand(AddContent);
-            DownloadContentCommand = new DelegateCommand(DecryptContent);
-
-            Dialog = new OpenFolderDialog();
-
+            LoadChangelog();
             LoadDatabase();
+            LoadCharts();
+        }
+
+        private void LoadChangelog()
+        {
+            if (ISettings.Changelog.Exists == true)
+            {
+                ChangelogContent = File.ReadAllText(ISettings.Changelog.Path);
+                ChangelogContentMarkdown = markdownConverter.Convert(ChangelogContent, null, null, null);
+            }
         }
 
         private void LoadDatabase()
@@ -99,87 +105,37 @@ namespace Folsense.ViewModels
             databaseModel.Content = databaseManager.Get();
         }
 
-        private void AddContent(object data)
+        private void LoadCharts()
         {
-            bool? status = Dialog.ShowDialog();
-            Models.Database.IO.FolderModel folder = null;
+            Dictionary<DateTime, double> records = new Dictionary<DateTime, double>();
+            ChartValues<double> values = new ChartValues<double>();
 
-            if (status == true)
+            foreach (Models.Database.IO.FolderModel folder in databaseModel.Content)
             {
-                folder = new Models.Database.IO.FolderModel(Dialog.FolderName);
-                folder.Id = Guid.NewGuid();
-                folder.Files = Convert(
-                    Directory.GetFiles(Dialog.FolderName, "*.*", SearchOption.AllDirectories)
-                );
-
-                databaseManager.Add(folder);
-
-                databaseModel.Content = databaseManager.Get();
-            }
-        }
-
-        private ObservableCollection<Models.Database.IO.FileModel> Convert(string[] files)
-        {
-            ObservableCollection<Models.Database.IO.FileModel> converted = new ObservableCollection<Models.Database.IO.FileModel>();
-            Models.Database.IO.FileModel newFile = null;
-
-            foreach (string file in files)
-            {
-                newFile = new Models.Database.IO.FileModel(file);
-                newFile.Data = ExtractHeader(file);
-                converted.Add(newFile);
-            }
-
-            return (converted);
-        }
-
-        private byte[] ExtractHeader(string file)
-        {
-            string cache = $"{ISettings.Cache.Path}\\{Path.GetFileName(file)}";
-            byte[] buffer = new byte[ISettings.HeaderSize];
-
-            using (FileStream inputFileStream = new FileStream(file, FileMode.Open, FileAccess.Read))
-            using (FileStream tempFileStream = new FileStream(cache, FileMode.Create, FileAccess.Write))
-            {
-                inputFileStream.Read(buffer, 0, ISettings.HeaderSize);
-                inputFileStream.Seek(ISettings.HeaderSize, SeekOrigin.Begin);
-                inputFileStream.CopyTo(tempFileStream);
-            }
-
-            File.Delete(file);
-            File.Move(cache, file);
-
-            return (buffer);
-        }
-
-        private void DecryptContent(object data)
-        {
-            Guid id = (Guid)data;
-            Models.Database.IO.FolderModel item = (Models.Database.IO.FolderModel)databaseManager.Retrieve(id);
-            string cache = $"{ISettings.Cache.Path}\\cache.tmp";
-            byte[] decrypted = null;
-
-            foreach (Models.Database.IO.FileModel file in item.Files)
-            {
-                decrypted = Security.Decrypt(file.Data);
-
-                using (FileStream cacheStream = new FileStream(cache, FileMode.Create, FileAccess.Write))
+                if (records.ContainsKey(folder.Date.Value.Date) == false)
                 {
-                    cacheStream.Write(decrypted, 0, decrypted.Length);
-
-                    using (FileStream originalFileStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read))
-                    {
-                        originalFileStream.CopyTo(cacheStream);
-                    }
+                    Dates.Add(folder.Date.ToString());
+                    records.Add(folder.Date.Value.Date, folder.Files.Count());
                 }
-
-                File.Delete(file.Path);
-                File.Move(cache, file.Path);
+                else
+                {
+                    records[folder.Date.Value.Date] += folder.Files.Count();
+                }
             }
 
-            databaseManager.Delete(id);
 
-            databaseModel.Content = databaseManager.Get();
+            foreach (KeyValuePair<DateTime, double> pair in records)
+            {
+                values.Add(pair.Value);
+            }
+
+            ChartSeries = new SeriesCollection
+            {
+                new LineSeries
+                {
+                    Values = values
+                }
+            };
         }
     }
 }

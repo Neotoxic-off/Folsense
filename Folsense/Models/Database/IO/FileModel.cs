@@ -45,6 +45,13 @@ namespace Folsense.Models.Database.IO
             set { SetProperty(ref _extension, value); }
         }
 
+        private string? _encryptedPath;
+        public string? EncryptedPath
+        {
+            get { return _encryptedPath; }
+            set { SetProperty(ref _encryptedPath, value); }
+        }
+
         private byte[]? _data;
         public byte[]? Data
         {
@@ -64,6 +71,7 @@ namespace Folsense.Models.Database.IO
             Path = path;
             Extension = System.IO.Path.GetExtension(path);
             Name = System.IO.Path.GetFileName(path);
+            EncryptedPath = Path.Replace(Name, $"{Id}");
             Data = Tools.Security.Encrypt(LoadData(path));
             Date = DateTime.Today;
         }

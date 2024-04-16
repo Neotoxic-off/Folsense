@@ -38,7 +38,13 @@ namespace Folsense.ViewModels
                 {
                     typeof(DashboardView),
                     new Tuple<UserControl, bool>(
-                        (UserControl)Activator.CreateInstance(new DashboardView().GetType()), true
+                        new DashboardView(), false
+                    )
+                },
+                {
+                    typeof(VaultView),
+                    new Tuple<UserControl, bool>(
+                        new VaultView(), true
                     )
                 },
                 {

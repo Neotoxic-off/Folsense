@@ -30,12 +30,12 @@ namespace Folsense.Models
             $"{Root.Path}\\Database",
             true
         );
+        public static FileModel Changelog = new FileModel(
+            $"changelog.md",
+            false
+        );
         public static FolderModel Cache = new FolderModel(
             $"{Root.Path}\\Cache",
-            true
-        );
-        public static FolderModel Download = new FolderModel(
-            $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\Folsense",
             true
         );
         public static int HeaderSize = 256;
