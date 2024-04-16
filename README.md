@@ -1,8 +1,9 @@
 # Folsense
-Folsense
 
-## Todo
-- [ ] Rename secrured files & folders by their id and restore the name
-- [ ] User can create own encryption key
-- [ ] Switch to strongger than XOR
-- [ ] Password Manager
+## Folsense Changelog
+
+### 04.16.2024
+- Add changelog display
+- Add history stats display
+- Moved "vault" to a real vault view
+- Improve UI
