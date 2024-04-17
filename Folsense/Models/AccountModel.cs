@@ -16,12 +16,25 @@ namespace Folsense.Models
             set { SetProperty(ref _username, value); }
         }
 
-        private string? _id;
-        public string? Id
+        private string? _machineName;
+        public string? MachineName
         {
-            get { return _id; }
-            set { SetProperty(ref _id, value); }
+            get { return _machineName; }
+            set { SetProperty(ref _machineName, value); }
         }
 
+        private string? _databases;
+        public string? Databases
+        {
+            get { return _databases; }
+            set { SetProperty(ref _databases, value); }
+        }
+
+        private int? _databasesCount;
+        public int? DatabasesCount
+        {
+            get { return _databasesCount; }
+            set { SetProperty(ref _databasesCount, value); }
+        }
     }
 }

@@ -19,12 +19,6 @@ using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using Folsense.Models.Database.IO;
 
-using LiveCharts;
-using LiveCharts.Configurations;
-using LiveCharts.Defaults;
-using LiveCharts.Wpf;
-using System.Runtime.Serialization;
-
 
 namespace Folsense.ViewModels
 {
@@ -44,34 +38,6 @@ namespace Folsense.ViewModels
             set { SetProperty(ref _changelogContentMarkdown, value); }
         }
 
-        private DatabaseManager? _databaseManager;
-        public DatabaseManager? databaseManager
-        {
-            get { return _databaseManager; }
-            set { SetProperty(ref _databaseManager, value); }
-        }
-
-        private DatabaseModel? _databaseModel;
-        public DatabaseModel? databaseModel
-        {
-            get { return _databaseModel; }
-            set { SetProperty(ref _databaseModel, value); }
-        }
-
-        private SeriesCollection? _chartSeries;
-        public SeriesCollection? ChartSeries
-        {
-            get { return _chartSeries; }
-            set { SetProperty(ref _chartSeries, value); }
-        }
-
-        private ObservableCollection<string>? _dates;
-        public ObservableCollection<string>? Dates
-        {
-            get { return _dates; }
-            set { SetProperty(ref _dates, value); }
-        }
-
         private MarkdownConverter _markdownConverter;
         public MarkdownConverter markdownConverter
         {
@@ -79,16 +45,44 @@ namespace Folsense.ViewModels
             set { SetProperty(ref _markdownConverter, value); }
         }
 
+        private string? _username;
+        public string? Username
+        {
+            get { return _username; }
+            set { SetProperty(ref _username, value); }
+        }
+
+        private DateTime? _date;
+        public DateTime? Date
+        {
+            get { return _date; }
+            set { SetProperty(ref _date, value); }
+        }
+
+        private long? _databaseSize;
+        public long? databaseSize
+        {
+            get { return _databaseSize; }
+            set { SetProperty(ref _databaseSize, value); }
+        }
+
+        private long? _diskSize;
+        public long? diskSize
+        {
+            get { return _diskSize; }
+            set { SetProperty(ref _diskSize, value); }
+        }
+
         public DashboardViewModel()
         {
-            databaseManager = new DatabaseManager();
-            databaseModel = new DatabaseModel();
-            Dates = new ObservableCollection<string>();
             markdownConverter = new MarkdownConverter();
+            databaseSize = DiskManager.GetDatabaseStorage();
+            diskSize = DiskManager.GetUserStorage();
 
             LoadChangelog();
-            LoadDatabase();
-            LoadCharts();
+
+            Username = Environment.UserName;
+            Date = DateTime.Now;
         }
 
         private void LoadChangelog()
@@ -98,44 +92,6 @@ namespace Folsense.ViewModels
                 ChangelogContent = File.ReadAllText(ISettings.Changelog.Path);
                 ChangelogContentMarkdown = markdownConverter.Convert(ChangelogContent, null, null, null);
             }
-        }
-
-        private void LoadDatabase()
-        {
-            databaseModel.Content = databaseManager.Get();
-        }
-
-        private void LoadCharts()
-        {
-            Dictionary<DateTime, double> records = new Dictionary<DateTime, double>();
-            ChartValues<double> values = new ChartValues<double>();
-
-            foreach (Models.Database.IO.FolderModel folder in databaseModel.Content)
-            {
-                if (records.ContainsKey(folder.Date.Value.Date) == false)
-                {
-                    Dates.Add(folder.Date.ToString());
-                    records.Add(folder.Date.Value.Date, folder.Files.Count());
-                }
-                else
-                {
-                    records[folder.Date.Value.Date] += folder.Files.Count();
-                }
-            }
-
-
-            foreach (KeyValuePair<DateTime, double> pair in records)
-            {
-                values.Add(pair.Value);
-            }
-
-            ChartSeries = new SeriesCollection
-            {
-                new LineSeries
-                {
-                    Values = values
-                }
-            };
         }
     }
 }

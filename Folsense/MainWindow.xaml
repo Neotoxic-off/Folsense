@@ -11,7 +11,7 @@
         xmlns:views="clr-namespace:Folsense.Views"
         xmlns:base="clr-namespace:Folsense.Bases"
         mc:Ignorable="d"
-        Background="Black"
+        Background="#212121"
         Height="720"
         Width="1080"
         MinHeight="450"
@@ -35,7 +35,6 @@
                 <RowDefinition Height="70"/>
                 <RowDefinition Height="70"/>
                 <RowDefinition Height="70"/>
-                <RowDefinition Height="*"/>
                 <RowDefinition Height="70"/>
             </Grid.RowDefinitions>
 
@@ -54,18 +53,24 @@
 
             <Button Grid.Row="2" Style="{StaticResource IconButton}" Margin="10" adonisExtensions:CornerRadiusExtension.CornerRadius="10"
                     Command="{Binding NavigateCommand}"
+                    CommandParameter="{x:Type views:StatisticsView}">
+                <Path Margin="15" Data="{StaticResource Statistics}" Fill="White" Stretch="Uniform"/>
+            </Button>
+
+            <Button Grid.Row="3" Style="{StaticResource IconButton}" Margin="10" adonisExtensions:CornerRadiusExtension.CornerRadius="10"
+                    Command="{Binding NavigateCommand}"
                     CommandParameter="{x:Type views:AccountView}">
                 <Path Margin="15" Data="{StaticResource Account}" Fill="White" Stretch="Uniform"/>
             </Button>
 
-            <Button Grid.Row="5" Style="{StaticResource IconButton}" Margin="10" adonisExtensions:CornerRadiusExtension.CornerRadius="10"
+            <Button Grid.Row="4" Style="{StaticResource IconButton}" Margin="10" adonisExtensions:CornerRadiusExtension.CornerRadius="10"
                     Command="{Binding NavigateCommand}"
                     CommandParameter="{x:Type views:SettingsView}">
                 <Path Margin="15" Data="{StaticResource Settings}" Fill="White" Stretch="Uniform"/>
             </Button>
         </Grid>
 
-        <Border Grid.Column="1" Background="White" Margin="5" CornerRadius="10">
+        <Border Grid.Column="1" Background="Black" Margin="5" CornerRadius="10">
             <ContentControl Content="{Binding CurrentView}"/>
         </Border>
     </Grid>

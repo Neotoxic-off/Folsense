@@ -3,6 +3,7 @@ using Folsense.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,16 @@ namespace Folsense.ViewModels
         public AccountViewModel()
         {
             accountModel = new AccountModel();
+
+            LoadAccount();
+        }
+
+        private void LoadAccount()
+        {
+            accountModel.MachineName = Environment.MachineName;
+            accountModel.Username = Environment.UserName;
+            accountModel.Databases = ISettings.Database.Path;
+            accountModel.DatabasesCount = Directory.GetFiles(ISettings.Database.Path).Length;
         }
     }
 }

@@ -20,53 +20,39 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="75"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border  Grid.Row="0" Background="Black" Margin="10,10,10,5" Padding="5" CornerRadius="10">
+        <Border Grid.Row="0" Margin="10">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="100"/>
-                </Grid.ColumnDefinitions>
-
-                <Label Grid.Column="1" Content="Folsense" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30" Foreground="White"/>
-                <Label Grid.Column="2" Content="Author: neo" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" Foreground="White"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="20"/>
+                </Grid.RowDefinitions>
+                
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Label Content="Welcome in Folsense, " FontSize="20"/>
+                    <Label Content="{Binding Username}" FontSize="20"/>
+                </StackPanel>
+                <Label Grid.Row="1" Content="{Binding Date}" Foreground="Gray"/>
             </Grid>
-            
         </Border>
-        
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*"/>
-                <ColumnDefinition Width="2*"/>
-            </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0" Background="Black" Margin="10,5,5,10" Padding="5" CornerRadius="10">
-                <lvc:CartesianChart Series="{Binding ChartSeries}">
-                    <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Labels="{Binding Dates}">
-                            <lvc:Axis.Separator>
-                                <lvc:Separator Step="1"></lvc:Separator>
-                            </lvc:Axis.Separator>
-                        </lvc:Axis>
-                    </lvc:CartesianChart.AxisX>
+        <Border Grid.Row="1" Background="#212121" Margin="10" Padding="5" CornerRadius="10">
+            <FlowDocumentScrollViewer>
+                <FlowDocumentScrollViewer.Document>
+                    <Binding Path="ChangelogContent" Converter="{StaticResource MarkdownConverter}" />
+                </FlowDocumentScrollViewer.Document>
+            </FlowDocumentScrollViewer>
+        </Border>
 
-                    <lvc:CartesianChart.AxisY>
-                        <lvc:Axis MinValue="0"/>
-                    </lvc:CartesianChart.AxisY>
-                </lvc:CartesianChart>
-            </Border>
-
-            <Border Grid.Column="1" Background="Black" Margin="5,5,10,10" Padding="5" CornerRadius="10">
-                <FlowDocumentScrollViewer>
-                    <FlowDocumentScrollViewer.Document>
-                        <Binding Path="ChangelogContent" Converter="{StaticResource MarkdownConverter}" />
-                    </FlowDocumentScrollViewer.Document>
-                </FlowDocumentScrollViewer>
-            </Border>
-        </Grid>
+        <Border Grid.Row="2" Background="#212121" Margin="10" Padding="5" CornerRadius="10">
+            <StackPanel>
+                <Label Content="{Binding diskSize}"/>
+                <Label Content="{Binding databaseSize}"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

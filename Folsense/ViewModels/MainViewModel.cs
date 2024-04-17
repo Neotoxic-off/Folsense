@@ -54,6 +54,12 @@ namespace Folsense.ViewModels
                     )
                 },
                 {
+                    typeof(StatisticsView),
+                    new Tuple<UserControl, bool>(
+                        new StatisticsView(), false
+                    )
+                },
+                {
                     typeof(SettingsView),
                     new Tuple<UserControl, bool>(
                         new SettingsView(), false
