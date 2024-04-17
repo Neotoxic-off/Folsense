@@ -1,6 +1,9 @@
 # Folsense
 
 ## Tasks
+- [ ] User can edit the encryption key
+- [ ] Unlock all after master key entered
+- [ ] Manage Master key & hash
 - [ ] Forward navigation
 - [ ] Backward navigation
 
