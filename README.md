@@ -1,5 +1,9 @@
 # Folsense
 
+## Tasks
+- [ ] Forward navigation
+- [ ] Backward navigation
+
 ## Folsense Changelog
 
 ### 04.16.2024
