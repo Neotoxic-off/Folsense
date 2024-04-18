@@ -9,6 +9,12 @@
 
 ## Folsense Changelog
 
+### 04.17.2024
+- Improve UI
+- Improve dashboard
+- Add account information
+- Update icons
+
 ### 04.16.2024
 - Add changelog display
 - Add history stats display
