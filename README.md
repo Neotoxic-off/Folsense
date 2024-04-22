@@ -9,6 +9,13 @@
 
 ## Folsense Changelog
 
+### 04.22.2024
+- Fix some padding problems
+- Update UI
+- Fix datetime format
+- Split stats & dashboard
+- Get Disk information for stats & database usage
+
 ### 04.17.2024
 - Improve UI
 - Improve dashboard

@@ -31,8 +31,6 @@ namespace Folsense.Tools
         {
             DriveInfo di = new DriveInfo(Path.GetPathRoot(ISettings.Database.Path));
 
-            MessageBox.Show(Path.GetPathRoot(ISettings.Database.Path));
-
             if (di.IsReady)
             {
                 return (di.TotalSize / 1000);

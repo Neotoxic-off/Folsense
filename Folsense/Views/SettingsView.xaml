@@ -13,6 +13,6 @@
     </UserControl.DataContext>
 
     <Grid>
-        <Label Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="50" Content="SETTINGS"/>
+        <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15" Content="Nothing is customizable yet"/>
     </Grid>
 </UserControl>

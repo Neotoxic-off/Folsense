@@ -72,13 +72,6 @@ namespace Folsense.ViewModels
             set { SetProperty(ref _dates, value); }
         }
 
-        private MarkdownConverter _markdownConverter;
-        public MarkdownConverter markdownConverter
-        {
-            get { return _markdownConverter; }
-            set { SetProperty(ref _markdownConverter, value); }
-        }
-
         public StatisticsViewModel()
         {
             databaseManager = new DatabaseManager();
@@ -115,7 +108,7 @@ namespace Folsense.ViewModels
 
             foreach (KeyValuePair<DateTime, double> pair in records)
             {
-                Dates.Add(pair.Key.ToString());
+                Dates.Add(pair.Key.ToString("MM.dd.yyyy"));
                 values.Add(pair.Value);
             }
 

@@ -22,7 +22,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="200"/>
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0" Margin="10">
@@ -31,7 +31,7 @@
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
-                
+
                 <StackPanel Grid.Row="0" Orientation="Horizontal">
                     <Label Content="Welcome in Folsense, " FontSize="20"/>
                     <Label Content="{Binding Username}" FontSize="20"/>
@@ -40,19 +40,28 @@
             </Grid>
         </Border>
 
-        <Border Grid.Row="1" Background="#212121" Margin="10" Padding="5" CornerRadius="10">
-            <FlowDocumentScrollViewer>
-                <FlowDocumentScrollViewer.Document>
-                    <Binding Path="ChangelogContent" Converter="{StaticResource MarkdownConverter}" />
-                </FlowDocumentScrollViewer.Document>
-            </FlowDocumentScrollViewer>
-        </Border>
-
-        <Border Grid.Row="2" Background="#212121" Margin="10" Padding="5" CornerRadius="10">
-            <StackPanel>
-                <Label Content="{Binding diskSize}"/>
-                <Label Content="{Binding databaseSize}"/>
-            </StackPanel>
+        <Grid Grid.Row="1">
+            <Border Background="#212121" Margin="10" CornerRadius="10" HorizontalAlignment="Left">
+                <StackPanel>
+                    <Label Content="Changelog:" FontSize="15" Margin="10"/>
+                    <ScrollViewer>
+                        <FlowDocumentScrollViewer VerticalScrollBarVisibility="Visible">
+                            <FlowDocumentScrollViewer.Document>
+                                <Binding Path="ChangelogContent" Converter="{StaticResource MarkdownConverter}" />
+                            </FlowDocumentScrollViewer.Document>
+                        </FlowDocumentScrollViewer>
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+        </Grid>
+        <Border Grid.Row="2" Background="#212121" Margin="10" CornerRadius="10">
+            <Grid>
+                <lvc:CartesianChart Series="{Binding ChartSeries}">
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Labels="{Binding Labels}" />
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

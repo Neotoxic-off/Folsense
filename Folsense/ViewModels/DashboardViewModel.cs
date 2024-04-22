@@ -18,6 +18,9 @@ using Folsense.Tools;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using Folsense.Models.Database.IO;
+using LiveCharts.Wpf;
+using LiveCharts;
+using System.Reflection.Emit;
 
 
 namespace Folsense.ViewModels
@@ -59,18 +62,32 @@ namespace Folsense.ViewModels
             set { SetProperty(ref _date, value); }
         }
 
-        private long? _databaseSize;
-        public long? databaseSize
+        private long _databaseSize;
+        public long databaseSize
         {
             get { return _databaseSize; }
             set { SetProperty(ref _databaseSize, value); }
         }
 
-        private long? _diskSize;
-        public long? diskSize
+        private long _diskSize;
+        public long diskSize
         {
             get { return _diskSize; }
             set { SetProperty(ref _diskSize, value); }
+        }
+
+        private SeriesCollection? _chartSeries;
+        public SeriesCollection? ChartSeries
+        {
+            get { return _chartSeries; }
+            set { SetProperty(ref _chartSeries, value); }
+        }
+
+        private string[] _labels;
+        public string[] Labels
+        {
+            get { return _labels; }
+            set { SetProperty(ref _labels, value); }
         }
 
         public DashboardViewModel()
@@ -80,6 +97,7 @@ namespace Folsense.ViewModels
             diskSize = DiskManager.GetUserStorage();
 
             LoadChangelog();
+            LoadCharts();
 
             Username = Environment.UserName;
             Date = DateTime.Now;
@@ -92,6 +110,20 @@ namespace Folsense.ViewModels
                 ChangelogContent = File.ReadAllText(ISettings.Changelog.Path);
                 ChangelogContentMarkdown = markdownConverter.Convert(ChangelogContent, null, null, null);
             }
+        }
+
+        private void LoadCharts()
+        {
+            ChartSeries = new SeriesCollection
+            {
+                new StackedRowSeries
+                {
+                    Values = new ChartValues<long> {diskSize, databaseSize},
+                    DataLabels = true,
+                    LabelPoint = p => p.X.ToString()
+                }
+            };
+            Labels = new[] { "Disk", "Databases" };
         }
     }
 }
