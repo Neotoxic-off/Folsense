@@ -1,5 +1,12 @@
 # Folsense
 
+| | |
+|:-------------------------:|:-------------------------:|
+|<img src="Images/1.png"/>|<img src="Images/2.png"/>|
+|<img src="Images/3.png"/>||
+
+
+
 ## Tasks
 - [ ] User can edit the encryption key
 - [ ] Unlock all after master key entered
