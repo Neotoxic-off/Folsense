@@ -1,5 +1,10 @@
 # Folsense
 
+**IMPORTANT: MAKE SURE TO EDIT THE KEY IF YOU WANT TO REBUILD IT**
+- Key: `Interfaces/Settings.cs`
+
+**IF YOU DON'T WANT TO REBUILD IT, I WILL SET THE KEY EDITABLE IN COMMING RELEASES, MAKE SURE TO KEEP ANOTHER COPY OF THE FILE ENCRYPTED**
+
 ## Tasks
 - [ ] User can edit the encryption key
 - [ ] Unlock all after master key entered
